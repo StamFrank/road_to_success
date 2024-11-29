@@ -1,4 +1,4 @@
-package ru.startandroid.develop.p00611_layouts
+package ru.success.road_to_success
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge

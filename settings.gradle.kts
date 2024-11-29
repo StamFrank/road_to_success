@@ -1,16 +1,12 @@
 pluginManagement {
     repositories {
-        google {
-            content {
-                includeGroupByRegex("com\\.android.*")
-                includeGroupByRegex("com\\.google.*")
-                includeGroupByRegex("androidx.*")
-            }
-        }
+        google()
         mavenCentral()
         gradlePluginPortal()
     }
 }
+
+@Suppress("UnstableApiUsage")
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
@@ -19,6 +15,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "P0061_Layouts"
+rootProject.name = "road_to_success"
 include(":app")
-include(":p00611_layouts")
