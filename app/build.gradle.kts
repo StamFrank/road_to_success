@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "ru.success.road_to_success"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
