@@ -4,8 +4,9 @@ package ru.success.road_to_success
 
 
 import android.os.Bundle
-import android.view.View
-import android.widget.Button
+import android.view.Menu
+import android.view.MenuItem
+import android.widget.CheckBox
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -14,32 +15,19 @@ import androidx.core.view.WindowInsetsCompat
 
 
 class MainActivity : AppCompatActivity() {
-    var tvOut: TextView? = null
-    var btnOk: Button? = null
-    var btnCancel: Button? = null
+
+    lateinit var tv: TextView
+    lateinit var chb: CheckBox
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
 
-        tvOut = findViewById(R.id.tvOut)
-        btnOk = findViewById(R.id.btnOk)
-        btnCancel = findViewById(R.id.btnCancel)
+        tv = findViewById(R.id.textView)
+        chb = findViewById(R.id.chbExtMenu)
 
-        val oclBtnOk = View.OnClickListener {
 
-            tvOut?.setText("Нажата кнопка ОК");
-        }
-
-        btnOk?.setOnClickListener(oclBtnOk);
-
-        val oclBtnCancel = object : View.OnClickListener {
-            override fun onClick(v: View?) { // Меняем текст в TextView (tvOut)
-                tvOut!!.text = "Нажата кнопка Cancel"
-            }
-        }
-
-        btnCancel?.setOnClickListener(oclBtnCancel);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -47,4 +35,51 @@ class MainActivity : AppCompatActivity() {
             insets
         }
     }
+    override fun onCreateOptionsMenu(menu: Menu): Boolean { // TODO Auto-generated method stub
+        // добавляем пункты меню
+        menu.add(0, 1, 0, "add")
+        menu.add(0, 2, 0, "edit")
+        menu.add(0, 3, 3, "delete")
+        menu.add(1, 4, 1, "copy")
+        menu.add(1, 5, 2, "paste")
+        menu.add(1, 6, 4, "exit")
+
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    // обновление меню
+    override fun onPrepareOptionsMenu(menu: Menu): Boolean { // TODO Auto-generated method stub
+        // пункты меню с ID группы = 1 видны, если в CheckBox стоит галка
+        menu.setGroupVisible(1, chb.isChecked)
+        return super.onPrepareOptionsMenu(menu)
+    }
+
+    // обработка нажатий
+    override fun onOptionsItemSelected(item: MenuItem): Boolean { // TODO Auto-generated method stub
+        val sb = StringBuilder()
+
+
+        // Выведем в TextView информацию о нажатом пункте меню
+        sb.append("Item Menu")
+        sb.append(
+            """
+ groupId: ${item.groupId}"""
+        )
+        sb.append(
+            """
+ itemId: ${item.itemId}"""
+        )
+        sb.append(
+            """
+ order: ${item.order}"""
+        )
+        sb.append(
+            """
+ title: ${item.title}"""
+        )
+        tv.text = sb.toString()
+
+        return super.onOptionsItemSelected(item)
+    }
+
 }
