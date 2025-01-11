@@ -1,12 +1,9 @@
 package ru.success.road_to_success
 
-
-
-
-
 import android.graphics.Color
 import android.os.Bundle
 import android.view.ContextMenu
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
@@ -18,16 +15,10 @@ import androidx.core.view.WindowInsetsCompat
 
 class MainActivity : AppCompatActivity() {
 
-    val MENU_COLOR_RED: Int = 1
-    val MENU_COLOR_GREEN: Int = 2
-    val MENU_COLOR_BLUE: Int = 3
-
-    val MENU_SIZE_22: Int = 4
-    val MENU_SIZE_26: Int = 5
-    val MENU_SIZE_30: Int = 6
-
     lateinit var tvSize: TextView
     lateinit var tvColor: TextView
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -37,6 +28,7 @@ class MainActivity : AppCompatActivity() {
         tvSize = findViewById(R.id.tvSize);
 
         // для tvColor и tvSize необходимо создавать контекстное меню
+
         registerForContextMenu(tvColor);
         registerForContextMenu(tvSize);
 
@@ -49,55 +41,55 @@ class MainActivity : AppCompatActivity() {
 
         }
 
+
     override fun onCreateContextMenu(
-        menu: ContextMenu,
+        menu: ContextMenu?,
         v: View?,
         menuInfo: ContextMenu.ContextMenuInfo?
     ) {
         when (v!!.id) {
             R.id.tvColor -> {
-                menu.add(0, MENU_COLOR_RED, 0, "Red")
-                menu.add(0, MENU_COLOR_GREEN, 0, "Green")
-                menu.add(0, MENU_COLOR_BLUE, 0, "Blue")
+                menuInflater.inflate(R.menu.mymenu, menu)
             }
 
             R.id.tvSize  -> {
-                menu.add(0, MENU_SIZE_22, 0, "22")
-                menu.add(0, MENU_SIZE_26, 0, "26")
-                menu.add(0, MENU_SIZE_30, 0, "30")
+                menuInflater.inflate(R.menu.mymenu2, menu)
+
             }
         }
+
+        super.onCreateContextMenu(menu, v, menuInfo)
     }
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
 
         when (item.itemId) {
-            MENU_COLOR_RED   -> {
+            R.id.MENU_COLOR_RED   -> {
                 tvColor.setTextColor(Color.RED)
                 tvColor.text = "Text color = red"
             }
 
-            MENU_COLOR_GREEN -> {
+            R.id.MENU_COLOR_GREEN -> {
                 tvColor.setTextColor(Color.GREEN)
                 tvColor.text = "Text color = green"
             }
 
-            MENU_COLOR_BLUE  -> {
+            R.id.MENU_COLOR_BLUE  -> {
                 tvColor.setTextColor(Color.BLUE)
                 tvColor.text = "Text color = blue"
             }
 
-            MENU_SIZE_22     -> {
+            R.id.MENU_SIZE_22     -> {
                 tvSize.textSize = 22f
                 tvSize.text = "Text size = 22"
             }
 
-            MENU_SIZE_26     -> {
+            R.id.MENU_SIZE_26     -> {
                 tvSize.textSize = 26f
                 tvSize.text = "Text size = 26"
             }
 
-            MENU_SIZE_30     -> {
+            R.id.MENU_SIZE_30     -> {
                 tvSize.textSize = 30f
                 tvSize.text = "Text size = 30"
             }
@@ -105,6 +97,7 @@ class MainActivity : AppCompatActivity() {
         return super.onContextItemSelected(item)
 
     }
+
 
 
     }
