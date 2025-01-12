@@ -4,47 +4,60 @@ package ru.success.road_to_success
 
 
 import android.os.Bundle
-import android.view.View
+import android.view.Gravity
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.ActionBar.LayoutParams
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 
 
 class MainActivity : AppCompatActivity() {
-    var tvOut: TextView? = null
-    var btnOk: Button? = null
-    var btnCancel: Button? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
+//        enableEdgeToEdge()
+        var linLayout = LinearLayout(this)
+        linLayout.orientation = LinearLayout.VERTICAL
+        var linLayoutParam = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
 
-        tvOut = findViewById(R.id.tvOut)
-        btnOk = findViewById(R.id.btnOk)
-        btnCancel = findViewById(R.id.btnCancel)
+        var IpView = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+        var tv = TextView(this)
+        tv.text = "TetView"
+        tv.layoutParams = IpView
+        linLayout.addView(tv)
 
-        val oclBtnOk = View.OnClickListener {
+        var btn = Button(this)
+        btn.text = "Button"
+        linLayout.addView(btn, IpView)
 
-            tvOut?.setText("Нажата кнопка ОК");
-        }
+        setContentView(linLayout, linLayoutParam)
 
-        btnOk?.setOnClickListener(oclBtnOk);
+        val leftMarginParams = LinearLayout.LayoutParams(
+            LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT
+        )
+        leftMarginParams.leftMargin = 50
 
-        val oclBtnCancel = object : View.OnClickListener {
-            override fun onClick(v: View?) { // Меняем текст в TextView (tvOut)
-                tvOut!!.text = "Нажата кнопка Cancel"
-            }
-        }
+        val btn1 = Button(this)
+        btn1.text = "Button1"
+        linLayout.addView(btn1, leftMarginParams)
 
-        btnCancel?.setOnClickListener(oclBtnCancel);
+        val rightGravityParams = LinearLayout.LayoutParams(
+            LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT
+        )
+        rightGravityParams.gravity = Gravity.RIGHT
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+        val btn2 = Button(this)
+        btn2.text = "Button2"
+        linLayout.addView(btn2, rightGravityParams)
+
+
+
+
+//        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+//            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+//            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+//            insets
+//        }
     }
 }
