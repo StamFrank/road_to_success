@@ -1,50 +1,60 @@
 package ru.success.road_to_success
 
-
-
-
 import android.os.Bundle
-import android.view.View
 import android.widget.Button
-import android.widget.TextView
+import android.widget.LinearLayout
+import android.widget.SeekBar
+import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 
 
-class MainActivity : AppCompatActivity() {
-    var tvOut: TextView? = null
-    var btnOk: Button? = null
-    var btnCancel: Button? = null
+class MainActivity : AppCompatActivity(), OnSeekBarChangeListener {
+
+    lateinit var sbWeight: SeekBar
+    lateinit var btn1: Button
+    lateinit var btn2: Button
+
+    lateinit var lParams1: LinearLayout.LayoutParams
+    lateinit var lParams2: LinearLayout.LayoutParams
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
+        sbWeight = findViewById(R.id.sbWeight)
+        sbWeight.setOnSeekBarChangeListener(this)
 
-        tvOut = findViewById(R.id.tvOut)
-        btnOk = findViewById(R.id.btnOk)
-        btnCancel = findViewById(R.id.btnCancel)
+        btn1 = findViewById(R.id.btn1)
+        btn2 = findViewById(R.id.btn2)
 
-        val oclBtnOk = View.OnClickListener {
+        lParams1 = btn1.layoutParams as LinearLayout.LayoutParams
+        lParams2 = btn2.layoutParams as LinearLayout.LayoutParams
 
-            tvOut?.setText("Нажата кнопка ОК");
-        }
+    }
 
-        btnOk?.setOnClickListener(oclBtnOk);
+    override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
+        val leftValue: Int = sbWeight.progress
+        val rightValue: Int = sbWeight.max - sbWeight.progress
 
-        val oclBtnCancel = object : View.OnClickListener {
-            override fun onClick(v: View?) { // Меняем текст в TextView (tvOut)
-                tvOut!!.text = "Нажата кнопка Cancel"
-            }
-        }
+        // настраиваем вес
+        lParams1.weight = leftValue.toFloat()
+        lParams2.weight = rightValue.toFloat()
 
-        btnCancel?.setOnClickListener(oclBtnCancel);
+        // в текст кнопок пишем значения переменных
+        btn1.text = "$leftValue"
+        btn2.text = "$rightValue"
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+    }
+
+    override fun onStartTrackingTouch(p0: SeekBar?) {
+
+
+    }
+
+    override fun onStopTrackingTouch(p0: SeekBar?) {
+
+
     }
 }
