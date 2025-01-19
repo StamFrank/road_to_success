@@ -4,8 +4,11 @@ package ru.success.road_to_success
 
 
 import android.os.Bundle
+import android.view.ContextMenu
+import android.view.MenuItem
 import android.view.View
-import android.widget.Button
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -14,37 +17,68 @@ import androidx.core.view.WindowInsetsCompat
 
 
 class MainActivity : AppCompatActivity() {
-    var tvOut: TextView? = null
-    var btnOk: Button? = null
-    var btnCancel: Button? = null
+
+    val MENU_ALPHA_ID: Int = 1
+    val MENU_SCALE_ID: Int = 2
+    val MENU_TRANSLATE_ID: Int = 3
+    val MENU_ROTATE_ID: Int = 4
+    val MENU_COMBO_ID: Int = 5
+
+    lateinit var tv: TextView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
 
-        tvOut = findViewById(R.id.tvOut)
-        btnOk = findViewById(R.id.btnOk)
-        btnCancel = findViewById(R.id.btnCancel)
+        tv = findViewById(R.id.tv)
+        // регистрируем контекстное меню для компонента tv
+        registerForContextMenu(tv)
+    }
 
-        val oclBtnOk = View.OnClickListener {
+    override fun onCreateContextMenu(
+        menu: ContextMenu?,
+        v: View?,
+        menuInfo: ContextMenu.ContextMenuInfo?
+    ) {
 
-            tvOut?.setText("Нажата кнопка ОК");
-        }
-
-        btnOk?.setOnClickListener(oclBtnOk);
-
-        val oclBtnCancel = object : View.OnClickListener {
-            override fun onClick(v: View?) { // Меняем текст в TextView (tvOut)
-                tvOut!!.text = "Нажата кнопка Cancel"
+        when (v!!.id){
+            R.id.tv ->{
+                menu!!.add(0, MENU_ALPHA_ID, 0, "alpha")
+                menu.add(0, MENU_SCALE_ID, 0, "scale")
+                menu.add(0, MENU_TRANSLATE_ID, 0, "translate")
+                menu.add(0, MENU_ROTATE_ID, 0, "rotate")
+                menu.add(0, MENU_COMBO_ID, 0, "combo")
             }
         }
 
-        btnCancel?.setOnClickListener(oclBtnCancel);
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+        super.onCreateContextMenu(menu, v, menuInfo)
     }
+
+    override fun onContextItemSelected(item: MenuItem): Boolean {
+
+        var anim: Animation? = null
+
+        when (item.itemId){
+            MENU_ALPHA_ID -> {
+                anim = AnimationUtils.loadAnimation(this, R.anim.myalpha)
+            }
+            MENU_SCALE_ID -> {
+                anim = AnimationUtils.loadAnimation(this, R.anim.myscale)
+            }
+            MENU_TRANSLATE_ID -> {
+                anim = AnimationUtils.loadAnimation(this, R.anim.mytrans)
+            }
+            MENU_ROTATE_ID -> {
+                anim = AnimationUtils.loadAnimation(this, R.anim.myrotate)
+            }
+            MENU_COMBO_ID -> {
+                anim = AnimationUtils.loadAnimation(this, R.anim.mycomb)
+            }
+        }
+
+        tv.startAnimation(anim);
+        return super.onContextItemSelected(item)
+    }
+
 }
