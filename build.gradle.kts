@@ -9,4 +9,7 @@ buildscript {
         maven(url = "https://jitpack.io")
         maven(url = "https://developer.huawei.com/repo/")
     }
+    dependencies {
+        classpath(libs.kotlin.gradle.plugin)
+    }
 }
