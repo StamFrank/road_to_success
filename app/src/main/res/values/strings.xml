@@ -1,3 +1,8 @@
 <resources>
+    <string-array name="Languages">
+        <item>Не сохранять при выходе</item>
+        <item>Сохранять при выходе</item>
 
+
+    </string-array>
 </resources>
