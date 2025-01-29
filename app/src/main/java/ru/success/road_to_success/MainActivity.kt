@@ -5,20 +5,14 @@ package ru.success.road_to_success
 
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.text.TextUtils
 import android.view.View
 import android.view.View.OnClickListener
-import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
-import android.widget.Spinner
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import kotlin.time.Duration.Companion.milliseconds
+import kotlin.math.absoluteValue
 
 
 class MainActivity : AppCompatActivity(), OnClickListener{
@@ -28,9 +22,8 @@ class MainActivity : AppCompatActivity(), OnClickListener{
     lateinit var chMinus: Button
     lateinit var proverka: CheckBox
     lateinit var sPref: SharedPreferences
-    var provCh: Boolean = false
 
-    var SAVED_TEXT: String = "string_new"
+    var SAVED_TEXT: String = "integer"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +34,7 @@ class MainActivity : AppCompatActivity(), OnClickListener{
         proverka.setOnClickListener(this)
 
         textOut = findViewById(R.id.textOut)
+        textOut.setOnClickListener(this)
 
         chMinus = findViewById(R.id.chMinus)
         chMinus.setOnClickListener(this)
@@ -48,10 +42,11 @@ class MainActivity : AppCompatActivity(), OnClickListener{
         chPlus = findViewById(R.id.chPlus)
         chPlus.setOnClickListener (this)
 
-        loadText()
+//        loadText()
 
 
     }
+
     override fun onClick(v: View?) {
 
         when (v!!.id){
@@ -60,15 +55,19 @@ class MainActivity : AppCompatActivity(), OnClickListener{
                 var text1 = text + 1
                 var text2 = text1.toString()
                 textOut.setText(text2)
+                saveText()
             }
             R.id.chMinus -> {
                 var text = textOut.text.toString().toInt()
                 var text1 = text - 1
                 var text2 = text1.toString()
                 textOut.setText(text2)
+                saveText()
             }
             R.id.proverka ->{
-                provCh = proverka.isChecked
+                if(proverka.isChecked){
+                    saveText()
+                }
             }
         }
 
@@ -76,30 +75,15 @@ class MainActivity : AppCompatActivity(), OnClickListener{
 
     private fun loadText() {
         sPref = getPreferences(MODE_PRIVATE)
-        var savedText = sPref.getString(SAVED_TEXT, "")
-        textOut.setText(savedText)
-        Toast.makeText(this, "Text loaded", Toast.LENGTH_SHORT).show()
+        var savedText = sPref.getInt(SAVED_TEXT, 0)
+        textOut.setText(savedText.absoluteValue)
     }
 
     private fun saveText() {
         sPref = getPreferences(MODE_PRIVATE)
         var ed = sPref.edit()
-        ed.putString(SAVED_TEXT, textOut.text.toString())
+        ed.putInt(SAVED_TEXT, textOut.text.toString().toInt())
         ed.apply()
-        Toast.makeText(this, "Text saved", Toast.LENGTH_SHORT).show()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        when (provCh) {
-            true  -> {
-                saveText()
-            }
-
-            false -> {
-                loadText()
-            }
-        }
-
+//        Toast.makeText(this, "Text saved", Toast.LENGTH_SHORT).show()
     }
 }
