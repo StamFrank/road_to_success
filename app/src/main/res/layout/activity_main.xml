@@ -17,10 +17,10 @@
         <EditText
             android:layout_width="250dp"
             android:layout_height="70dp"
-            android:id="@+id/textOut">
+            android:id="@+id/textOut"
+            android:text="0">
         </EditText>
         <Button
-            android:layout_marginTop="40dp"
             android:layout_width="150dp"
             android:layout_height="50dp"
             android:id="@+id/chPlus"
@@ -32,12 +32,25 @@
             android:id="@+id/chMinus"
             android:text="Отнять">
         </Button>
+        <Button
+            android:layout_marginTop="40dp"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:id="@+id/btnLoad"
+            android:text="Загрузить">
+        </Button>
         <CheckBox
             android:layout_width="200dp"
             android:layout_height="50dp"
             android:id="@+id/proverka"
             android:text="Сохранять при выходе">
         </CheckBox>
+        <TextView
+            android:layout_width="290dp"
+            android:layout_height="60dp"
+            android:id="@+id/lastText"
+            android:textSize="25dp">
+        </TextView>
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

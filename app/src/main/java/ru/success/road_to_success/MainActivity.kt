@@ -10,6 +10,8 @@ import android.view.View.OnClickListener
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
+import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import kotlin.math.absoluteValue
@@ -21,7 +23,9 @@ class MainActivity : AppCompatActivity(), OnClickListener{
     lateinit var chPlus: Button
     lateinit var chMinus: Button
     lateinit var proverka: CheckBox
+    lateinit var lastText: TextView
     lateinit var sPref: SharedPreferences
+    lateinit var btnLoad: Button
 
     var SAVED_TEXT: String = "integer"
 
@@ -29,6 +33,11 @@ class MainActivity : AppCompatActivity(), OnClickListener{
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
+
+        lastText = findViewById(R.id.lastText)
+
+        btnLoad = findViewById(R.id.btnLoad)
+        btnLoad.setOnClickListener(this)
 
         proverka = findViewById(R.id.proverka)
         proverka.setOnClickListener(this)
@@ -42,9 +51,7 @@ class MainActivity : AppCompatActivity(), OnClickListener{
         chPlus = findViewById(R.id.chPlus)
         chPlus.setOnClickListener (this)
 
-//        loadText()
-
-
+        lastText.setText("Last saved Int: " + loadText(savedText = SAVED_TEXT).toString())
     }
 
     override fun onClick(v: View?) {
@@ -55,35 +62,47 @@ class MainActivity : AppCompatActivity(), OnClickListener{
                 var text1 = text + 1
                 var text2 = text1.toString()
                 textOut.setText(text2)
-                saveText()
+//                if(proverka.isChecked){
+//                    saveText()
+//                }
             }
             R.id.chMinus -> {
                 var text = textOut.text.toString().toInt()
                 var text1 = text - 1
                 var text2 = text1.toString()
                 textOut.setText(text2)
-                saveText()
             }
-            R.id.proverka ->{
+            R.id.proverka -> {
                 if(proverka.isChecked){
                     saveText()
                 }
+            }
+            R.id.btnLoad -> {
+                textOut.setText(loadText(savedText = SAVED_TEXT).toString())
             }
         }
 
     }
 
-    private fun loadText() {
+    private fun loadText(savedText: String): String? {
         sPref = getPreferences(MODE_PRIVATE)
-        var savedText = sPref.getInt(SAVED_TEXT, 0)
-        textOut.setText(savedText.absoluteValue)
+        val savedText = sPref.getString(SAVED_TEXT, "")
+        return savedText
     }
 
     private fun saveText() {
         sPref = getPreferences(MODE_PRIVATE)
-        var ed = sPref.edit()
-        ed.putInt(SAVED_TEXT, textOut.text.toString().toInt())
+        val ed = sPref.edit()
+        ed.putString(SAVED_TEXT, textOut.text.toString())
         ed.apply()
-//        Toast.makeText(this, "Text saved", Toast.LENGTH_SHORT).show()
     }
+
+        override fun onStop() {
+
+            if(proverka.isChecked){
+                saveText()
+            }
+            super.onStop()
+        }
+
 }
