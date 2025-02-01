@@ -1,50 +1,142 @@
 package ru.success.road_to_success
-
-
-
-
+import android.content.ContentValues
+import android.content.Context
+import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteOpenHelper
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import android.view.View.OnClickListener
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 
 
-class MainActivity : AppCompatActivity() {
-    var tvOut: TextView? = null
-    var btnOk: Button? = null
-    var btnCancel: Button? = null
+class MainActivity : AppCompatActivity(), OnClickListener {
+
+    val LOG_TAG: String = "myLogs"
+    lateinit var btnAdd: Button
+    lateinit var btnRead: Button
+    lateinit var btnClear: Button
+    lateinit var etName: EditText
+    lateinit var etEmail: EditText
+    lateinit var listAll: TextView
+
+    var dbHelper: DBHelper? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
 
-        tvOut = findViewById(R.id.tvOut)
-        btnOk = findViewById(R.id.btnOk)
-        btnCancel = findViewById(R.id.btnCancel)
+        btnAdd = findViewById(R.id.btnAdd);
+        btnAdd.setOnClickListener(this);
 
-        val oclBtnOk = View.OnClickListener {
+        listAll = findViewById(R.id.listAll)
 
-            tvOut?.setText("Нажата кнопка ОК");
-        }
+        btnRead = findViewById(R.id.btnRead);
+        btnRead.setOnClickListener(this);
 
-        btnOk?.setOnClickListener(oclBtnOk);
+        btnClear = findViewById(R.id.btnClear);
+        btnClear.setOnClickListener(this);
 
-        val oclBtnCancel = object : View.OnClickListener {
-            override fun onClick(v: View?) { // Меняем текст в TextView (tvOut)
-                tvOut!!.text = "Нажата кнопка Cancel"
+        etName = findViewById(R.id.etName);
+        etEmail = findViewById(R.id.etEmail);
+
+        // создаем объект для создания и управления версиями БД
+        dbHelper = DBHelper(this);
+
+    }
+
+
+    override fun onClick(v: View?) {
+
+
+        // создаем объект для данных
+        val cv = ContentValues()
+
+
+        // получаем данные из полей ввода
+        val name = etName.text.toString()
+        val email = etEmail.text.toString()
+
+
+        // подключаемся к БД
+        val db = dbHelper!!.writableDatabase
+
+
+        when (v!!.id) {
+            R.id.btnAdd   -> {
+                Log.d(LOG_TAG, "--- Insert in mytable: ---")
+
+                // подготовим данные для вставки в виде пар: наименование столбца - значение
+                cv.put("name", name)
+                cv.put("email", email) // вставляем запись и получаем ее ID
+                val rowID = db.insert("mytable", null, cv)
+                Log.d(LOG_TAG, "row inserted, ID = $rowID")
+                etName.text=null
+                etEmail.text=null
+            }
+
+            R.id.btnRead  -> {
+                var listik = ""
+                Log.d(
+                    LOG_TAG, "--- Rows in mytable: ---"
+                ) // делаем запрос всех данных из таблицы mytable, получаем Cursor
+                val c = db.query("mytable", null, null, null, null, null, null)
+
+
+                // ставим позицию курсора на первую строку выборки
+                // если в выборке нет строк, вернется false
+                if (c.moveToFirst()) { // определяем номера столбцов по имени в выборке
+                    listik = "List of rows: \n"
+                    val idColIndex = c.getColumnIndex("id")
+                    val nameColIndex = c.getColumnIndex("name")
+                    val emailColIndex = c.getColumnIndex("email")
+
+                    do { // получаем значения по номерам столбцов и пишем все в лог
+                        Log.d(
+                            LOG_TAG,
+                            "ID = " + c.getInt(idColIndex) + ", name = " + c.getString(nameColIndex) + ", email = " + c.getString(
+                                emailColIndex
+                            )
+                        ) // переход на следующую строку
+                        // а если следующей нет (текущая - последняя), то false - выходим из цикла
+                        listik += ("\nID = " + c.getInt(idColIndex) + ", name = " + c.getString(nameColIndex) + ", email = " + c.getString(
+                            emailColIndex))
+                    } while (c.moveToNext())
+                } else Log.d(LOG_TAG, "0 rows")
+                c.close()
+                listAll.text = listik
+            }
+
+            R.id.btnClear -> {
+                Log.d(LOG_TAG, "--- Clear mytable: ---") // удаляем все записи
+                val clearCount = db.delete("mytable", null, null)
+                Log.d(LOG_TAG, "deleted rows count = $clearCount")
             }
         }
 
-        btnCancel?.setOnClickListener(oclBtnCancel);
+        // закрываем подключение к БД
+        dbHelper!!.close()
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+
+    }
+
+
+    class DBHelper(context: Context?) : SQLiteOpenHelper(context, "myDB", null, 1) {
+        override fun onCreate(db: SQLiteDatabase) {
+//            Log.d(LOG_TAG, "--- onCreate database ---") // создаем таблицу с полями
+            db.execSQL(
+                ("create table mytable (" + "id integer primary key autoincrement," + "name text," + "email text" + ");")
+            )
+        }
+
+        override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         }
     }
+
+
 }
