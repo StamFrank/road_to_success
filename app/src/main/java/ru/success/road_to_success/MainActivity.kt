@@ -1,6 +1,7 @@
 package ru.success.road_to_success
 import android.content.ContentValues
 import android.content.Context
+import android.content.Intent
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.os.Bundle
@@ -34,7 +35,7 @@ class MainActivity : AppCompatActivity(), OnClickListener {
         btnAdd = findViewById(R.id.btnAdd);
         btnAdd.setOnClickListener(this);
 
-        listAll = findViewById(R.id.listAll)
+//        listAll = findViewById(R.id.listAll)
 
         btnRead = findViewById(R.id.btnRead);
         btnRead.setOnClickListener(this);
@@ -109,7 +110,10 @@ class MainActivity : AppCompatActivity(), OnClickListener {
                     } while (c.moveToNext())
                 } else Log.d(LOG_TAG, "0 rows")
                 c.close()
-                listAll.text = listik
+                val intent = Intent(this, MainActivity2::class.java)
+                intent.putExtra("SendListik", listik)
+                startActivity(intent)
+
             }
 
             R.id.btnClear -> {
