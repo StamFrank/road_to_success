@@ -21,6 +21,9 @@ class MainActivity : AppCompatActivity(), OnClickListener {
     lateinit var btnAdd: Button
     lateinit var btnRead: Button
     lateinit var btnClear: Button
+    lateinit var btnDel: Button
+    lateinit var btnUpd: Button
+    lateinit var etID: EditText
     lateinit var etName: EditText
     lateinit var etEmail: EditText
     lateinit var listAll: TextView
@@ -31,6 +34,15 @@ class MainActivity : AppCompatActivity(), OnClickListener {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
+
+        etID = findViewById(R.id.etID)
+        etID.setOnClickListener(this)
+
+        btnDel = findViewById(R.id.btnDel)
+        btnDel.setOnClickListener(this)
+
+        btnUpd = findViewById(R.id.btnUpd)
+        btnUpd.setOnClickListener(this)
 
         btnAdd = findViewById(R.id.btnAdd);
         btnAdd.setOnClickListener(this);
@@ -62,6 +74,7 @@ class MainActivity : AppCompatActivity(), OnClickListener {
         // получаем данные из полей ввода
         val name = etName.text.toString()
         val email = etEmail.text.toString()
+        val id = etID.text.toString()
 
 
         // подключаемся к БД
@@ -116,10 +129,35 @@ class MainActivity : AppCompatActivity(), OnClickListener {
 
             }
 
+            R.id.btnUpd -> {
+
+                if((name != "") && (email != "")) {
+
+                    Log.d(LOG_TAG, "--- Update mytable: ---")
+                    cv.put("name", name)
+                    cv.put("email", email)
+                    val updCount = db.update("mytable", cv, "id = ?", arrayOf(id))
+                    Log.d(LOG_TAG, "updated rows count = $updCount")
+                }
+
+
+            }
+
+            R.id.btnDel -> {
+
+                Log.d(LOG_TAG, "--- Delete from mytable: ---");
+                val delCount = db.delete("mytable", "id = $id", null)
+                Log.d(LOG_TAG, "deleted rows count = $delCount")
+
+            }
+
             R.id.btnClear -> {
                 Log.d(LOG_TAG, "--- Clear mytable: ---") // удаляем все записи
                 val clearCount = db.delete("mytable", null, null)
                 Log.d(LOG_TAG, "deleted rows count = $clearCount")
+            }
+            R.id.etID -> {
+                etID.setText("")
             }
         }
 
