@@ -13,6 +13,7 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.text.isDigitsOnly
 
 
 class MainActivity : AppCompatActivity(), OnClickListener {
@@ -56,7 +57,9 @@ class MainActivity : AppCompatActivity(), OnClickListener {
         btnClear.setOnClickListener(this);
 
         etName = findViewById(R.id.etName);
+        etName.setSelectAllOnFocus(true)
         etEmail = findViewById(R.id.etEmail);
+        etEmail.setSelectAllOnFocus(true)
 
         // создаем объект для создания и управления версиями БД
         dbHelper = DBHelper(this);
@@ -145,9 +148,12 @@ class MainActivity : AppCompatActivity(), OnClickListener {
 
             R.id.btnDel -> {
 
-                Log.d(LOG_TAG, "--- Delete from mytable: ---");
-                val delCount = db.delete("mytable", "id = $id", null)
-                Log.d(LOG_TAG, "deleted rows count = $delCount")
+                if ((id != "") && (id.isDigitsOnly())) {
+
+                    Log.d(LOG_TAG, "--- Delete from mytable: ---");
+                    val delCount = db.delete("mytable", "id = $id", null)
+                    Log.d(LOG_TAG, "deleted rows count = $delCount")
+                }
 
             }
 
