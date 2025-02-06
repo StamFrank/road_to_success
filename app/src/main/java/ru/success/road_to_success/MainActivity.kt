@@ -225,10 +225,10 @@ class MainActivity : AppCompatActivity(), OnClickListener {
 
         private const val DB_CREATE_REQUEST: String =
             "create table $TABLE_NAME " +
-            "(" +
-            "$DB_FIELD_ID integer primary key autoincrement," +
-            "$DB_FIELD_NAME text," +
-            "$DB_FIELD_EMAIL text" +
-            ");"
+                    "(" +
+                    "$DB_FIELD_ID integer primary key autoincrement," +
+                    "$DB_FIELD_NAME text," +
+                    "$DB_FIELD_EMAIL text" +
+                    ");"
     }
 }
