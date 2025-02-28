@@ -101,5 +101,20 @@
                 android:layout_height="wrap_content"
                 android:text="Clear">
             </Button>
+            <Button
+                android:id="@+id/btnGson"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Read Data">
+            </Button>
+
         </LinearLayout>
+    <TextView
+        android:id="@+id/dataGson"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp">
+    </TextView>
     </LinearLayout>

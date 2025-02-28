@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <integer name="com_vk_sdk_AppId">53127230</integer>
+<!--    https://oauth.vk.com/blank.html#access_token=vk1.a.JnSfD-PZaCDaIE8Q3RXFsNMZu3w27_d0olkzTlS9lh3h-w8l-HmfZl-erUKllue_Or3QNkMzIC09zx0MN2gS5c9i58oiHwL1XVK5QcFVMgyYcciAw-KTwSwlKO1LTrW9_EjFiwl1ucB2pZSvhkwK0VUxeTDBZVo_TbVDnaokaTFyVUWGDgvvoD4ljvF9Ul73daUgnZPSAN-CALjhmr3__w&expires_in=0&user_id=97027089-->
+
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 </resources>
