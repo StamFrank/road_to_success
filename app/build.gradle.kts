@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("org.jetbrains.kotlin.plugin.serialization") version "2.1.20-RC"
 }
 
 android {
@@ -53,4 +54,5 @@ dependencies {
     implementation(libs.converter.gson)
     implementation(libs.android.sdk.api)
     implementation(libs.android.sdk.core)
+    implementation(libs.kotlinx.serialization.json)
 }

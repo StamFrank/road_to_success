@@ -7,9 +7,6 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import org.w3c.dom.Text
 
 class MainActivity2 : AppCompatActivity(), OnClickListener {
     lateinit var backMenu: Button
@@ -25,6 +22,9 @@ class MainActivity2 : AppCompatActivity(), OnClickListener {
         backMenu.setOnClickListener(this)
         var listik = intent.getStringExtra("SendListik")
         listAll.text = listik
+
+
+
     }
 
     override fun onClick(v: View?) {

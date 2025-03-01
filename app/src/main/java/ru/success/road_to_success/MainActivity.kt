@@ -9,21 +9,22 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
-import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import com.example.example.PojoClass
+import com.google.gson.GsonBuilder
 import com.vk.api.sdk.utils.VKUtils
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import okhttp3.Call
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
+import java.io.IOException
 
 
-class MainActivity : AppCompatActivity(), OnClickListener {
+class MainActivity() : AppCompatActivity(), OnClickListener {
     private lateinit var btnAdd: Button
     private lateinit var btnRead: Button
     private lateinit var btnClear: Button
@@ -35,9 +36,10 @@ class MainActivity : AppCompatActivity(), OnClickListener {
 //    private lateinit var dataGson: ListView
     private lateinit var dataGson: TextView
     private lateinit var btnGson: Button
-
     private lateinit var dbHelper: DBHelper
-    
+
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,37 +91,28 @@ class MainActivity : AppCompatActivity(), OnClickListener {
     private fun handleOnGsonViewClicked() {
         Log.d("sislok", "Прошло1")
 
-        var rf = Retrofit.Builder()
-            .baseUrl(RetrofitInterface.BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-        var API = rf.create(RetrofitInterface::class.java)
-        var call = API.posts
-        call?.enqueue(object: Callback<List<PostModel?>?>{
-            override fun onResponse(
-                call: Call<List<PostModel?>?>, response: Response<List<PostModel?>?>
-            ) {
-                var postSring: String = null.toString()
-                var postlist : List<PostModel>? = response.body() as List<PostModel>
-                var post = arrayOfNulls<String>(postlist!!.size)
-                for (i in postlist!!.indices) {
-                    post[i] = postlist!![i]!!.title
-                    postSring += post[i].toString()+"\n"
-                }
-                var adapter = ArrayAdapter<String>(applicationContext,android.R.layout.simple_dropdown_item_1line, post)
-                    dataGson.text = postSring
-            }
+        var url = "https://api.vk.com/method/messages.getHistoryAttachments?peer_id=143274101&cmid=227218&attachment_types=photo&access_token=vk1.a.zVehBTs4fVQyS90D9qvac3qjUiUDwarEbIPBkT9di03SHsj0jz5WFjv8XwvoHQAE2RmUhmbNduJa6ND7LOPRP392SANhsLJWlHKskOnG5csu3U5TZ5dcVybcXXssXFsql0N9rZrRR_TSTkvhR4UP5rMrm6gIR5IMO6oDr0C1VUb4UeSN4TGjRMcNmRNHcu_LqU3lMRVtzJR_t6t2_MIDiw&v=5.199"
 
-            override fun onFailure(call: Call<List<PostModel?>?>, t: Throwable) {
+        val request = Request.Builder().url(url).build()
+
+        val client = OkHttpClient()
+        client.newCall(request).enqueue(object: okhttp3.Callback{
+            override fun onResponse(call: Call, response: Response) {
+                val body = response.body?.string()
+                Log.d("sislok", body.toString())
+                val gson = GsonBuilder().create()
+                val rresponse = gson.fromJson(body, PojoClass::class.java)
 
 
+
+
+                Log.d("sislok", rresponse.toString())
 
             }
-
+            override fun onFailure(call: Call, e: IOException) {
+                Log.d("sislok", "Ошибка запроса")
+            }
         })
-
-
-        Log.d("sislok", "Прошло3")
     }
 
     private fun initDB() {
