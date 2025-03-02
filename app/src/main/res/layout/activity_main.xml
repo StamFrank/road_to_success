@@ -10,104 +10,53 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginTop="25dp">
         <LinearLayout
-            android:id="@+id/linearLayout4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="ID"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="25dp">
-            </TextView>
-            <EditText
-                android:id="@+id/etID"
-                android:layout_width="70dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp">
-            </EditText>
+            android:layout_marginTop="5dp"
+            android:gravity="center">
             <Button
-                android:id="@+id/btnUpd"
-                android:layout_width="wrap_content"
+                android:id="@+id/tokenUpdate"
+                android:layout_width="250dp"
                 android:layout_height="wrap_content"
-                android:text="Update">
+                android:text="Get token url">
             </Button>
-            <Button
-                android:id="@+id/btnDel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Delete">
-            </Button>
+
         </LinearLayout>
         <LinearLayout
             android:id="@+id/linearLayout1"
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Name"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp">
-            </TextView>
             <EditText
-                android:id="@+id/etName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1">
-                <requestFocus>
-                </requestFocus>
+                android:id="@+id/friendID"
+                android:text="143274101"
+                android:hint="Friend ID"
+                android:layout_width="110dp"
+                android:layout_height="match_parent">
             </EditText>
+            <EditText
+                android:id="@+id/tokenID"
+                android:text="https://oauth.vk.com/blank.html#access_token=vk1.a.IP1FB3BRoS6aR1hG3q0HG3KzLs7T03fO8Q-3PoAcYNA79mpD4ri7_6rAVEklyD1PcphhHbu0l22UPhBxne1hvbuZNA-kdnItU9wQXJkK__kb5ZC-AbP3MtH5uC-yASR6Lv7NUj4xj-fdkV7zlSA7Zl7gVA0tGkt3LftVDQK8Em4AySZRJHCLoJpkQZcUollCwrjsWtrxiBVrp3hPzTwAFg&amp;expires_in=0&amp;user_id=97027089"
+                android:hint="Received URL"
+                android:layout_width="140dp"
+                android:layout_height="match_parent">
+            </EditText>
+            <Button
+                android:id="@+id/btnLink"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Link Chat">
+            </Button>
         </LinearLayout>
         <LinearLayout
             android:id="@+id/linearLayout3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Email"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp">
-            </TextView>
-            <EditText
-                android:id="@+id/etEmail"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1">
-            </EditText>
-        </LinearLayout>
-        <LinearLayout
-            android:id="@+id/linearLayout2"
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content">
             <Button
-                android:id="@+id/btnAdd"
-                android:layout_width="wrap_content"
+                android:id="@+id/btnSavePhotoData"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Add">
+                android:text="Press to save photo URL">
             </Button>
-            <Button
-                android:id="@+id/btnRead"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Read">
-            </Button>
-            <Button
-                android:id="@+id/btnClear"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Clear">
-            </Button>
-            <Button
-                android:id="@+id/btnGson"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Read Data">
-            </Button>
-
         </LinearLayout>
     <TextView
         android:id="@+id/dataGson"
