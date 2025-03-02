@@ -3,6 +3,7 @@ package ru.success.road_to_success
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
@@ -19,7 +20,10 @@ import okhttp3.Call
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
+import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
+import java.util.concurrent.CountDownLatch
 
 
 class MainActivity() : AppCompatActivity(), OnClickListener {
@@ -96,50 +100,53 @@ class MainActivity() : AppCompatActivity(), OnClickListener {
     private fun handleOnBtnSavePhotoDataClicked() {
         Log.d("sislok", "Прошло1")
 
-        var url = "https://api.vk.com/method/messages.getHistoryAttachments?peer_id=$friendIDGlobal&cmid=$cmidGlobal&count=200&attachment_types=photo&access_token=$tokenGlobal&v=5.199"
-        var urlUltra = url
-
-
-
-        val request = Request.Builder().url(urlUltra).build()
-
-
         val client = OkHttpClient()
 
-             client.newCall(request).enqueue(object : okhttp3.Callback  {
+        while (cmidsPredator >= 3) {
 
-                 override fun onResponse(call: Call, response: Response) {
-                     val body = response.body?.string()
-                     Log.d("sislok", body.toString())
-                     val gson = GsonBuilder().create()
-                     val rresponse = gson.fromJson(body, PojoClass::class.java)
+            val latch = CountDownLatch(1)
 
-                     // Regular expression patterns to match 'url=' and 'cmid='
-                     val urlPattern = "url=(https?:\\/\\/[^\\s)]+)".toRegex()
-                     val cmidPattern = "cmid=(\\d+)".toRegex()
+            var url = "https://api.vk.com/method/messages.getHistoryAttachments?peer_id=$friendIDGlobal&cmid=$cmidGlobal&count=200&attachment_types=photo&access_token=$tokenGlobal&v=5.199"
+            var urlUltra = url
 
-                     var inputedString = rresponse.toString()
+            val request = Request.Builder().url(urlUltra).build()
 
-                     // Find all matches for URLs and CMIDs
-                     val urls = urlPattern.findAll(inputedString).map { it.groupValues[1] }.toList()
-                     val cmids =
-                         cmidPattern.findAll(inputedString).map { it.groupValues[1] }.toList()
+            client.newCall(request).enqueue(object : okhttp3.Callback {
 
-                     // Print the extracted URLs and CMIDs
-                     println("Extracted URLs:")
-                     urls.forEach { photosUrls.add(it); println(it) }
+                override fun onResponse(call: Call, response: Response) {
+                    val body = response.body?.string()
+                    Log.d("sislok", body.toString())
+                    val gson = GsonBuilder().create()
+                    val rresponse = gson.fromJson(body, PojoClass::class.java)
 
-                     println("\nExtracted CMIDs:")
-                     cmids.forEach { cmid = it; println(it) }
-                     cmidGlobal = cmids.toString()
-                     cmidsPredator = cmids.count()
-                 }
+                    val urlPattern = "url=(https?:\\/\\/[^\\s)]+)".toRegex()
+                    val cmidPattern = "cmid=(\\d+)".toRegex()
+
+                    var inputedString = rresponse.toString()
+
+                    val urls = urlPattern.findAll(inputedString).map { it.groupValues[1] }.toList()
+                    val cmids =
+                        cmidPattern.findAll(inputedString).map { it.groupValues[1] }.toList()
+
+                    println("Extracted URLs:")
+                    urls.forEach { photosUrls.add(it); println(it) }
+                    println("\nExtracted CMIDs:")
+                    cmids.forEach { cmid = it; println(it) }
+                    cmidsPredator = cmids.count()
+                    cmidGlobal = cmids.lastOrNull() ?: ""
+
+                    latch.countDown()
+                }
 
 
-                 override fun onFailure(call: Call, e: IOException) {
-                     Log.d("sislok", "Ошибка запроса")
-                 }
-             })
+                override fun onFailure(call: Call, e: IOException) {
+                    Log.d("sislok", "Ошибка запроса")
+                    latch.countDown()
+                }
+            })
+            latch.await()
+        }
+        saveUrlsToTxt(photosUrls)
 
     }
 
@@ -202,6 +209,27 @@ class MainActivity() : AppCompatActivity(), OnClickListener {
 
     }
 
+
+    fun saveUrlsToTxt(photosUrls: List<String>) {
+        val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+
+        val file = File(downloadsDir, "photos_urls.txt")
+
+        try {
+            FileOutputStream(file).use { fos ->
+                val content = photosUrls.joinToString(separator = "\n")
+
+                fos.write(content.toByteArray())
+                fos.flush()
+
+                println("Файл успешно сохранён в: ${file.absolutePath}")
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+            println("Ошибка при записи файла: ${e.message}")
+        }
+    }
+
     companion object {
         private const val LOG_TAG: String = "myLogs"
         private const val TABLE_NAME: String = "mytable"
@@ -222,3 +250,4 @@ class MainActivity() : AppCompatActivity(), OnClickListener {
                     ");"
     }
 }
+
