@@ -28,6 +28,7 @@
             android:layout_height="wrap_content">
             <EditText
                 android:id="@+id/friendID"
+
                 android:hint="Friend ID"
                 android:layout_weight="1.1"
                 android:singleLine="true"

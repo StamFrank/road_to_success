@@ -19,6 +19,7 @@ import com.example.example.AlbumPhotos
 import com.example.example.MessagePhotosCMID
 import com.example.example.PojoClass
 import com.google.gson.GsonBuilder
+import com.vk.api.sdk.VK
 import com.vk.api.sdk.utils.VKUtils
 import okhttp3.Call
 import okhttp3.OkHttpClient
@@ -27,6 +28,8 @@ import okhttp3.Response
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.*
 import java.util.concurrent.CountDownLatch
 
 
@@ -49,7 +52,7 @@ class MainActivity() : AppCompatActivity(), OnClickListener {
     lateinit var spinnerAdapter: ArrayAdapter<String>
 
 
-    var cmidsPredator: Int = 100
+    var cmidsPredator: Int = 5
     var cmid: String = ""
     var photosUrls = mutableListOf<String>()
 
@@ -61,9 +64,7 @@ class MainActivity() : AppCompatActivity(), OnClickListener {
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
 
-
         initUI()
-
 
         val fingerprints: Array<String?>? = VKUtils.getCertificateFingerprint(
             this, this.packageName
@@ -72,7 +73,12 @@ class MainActivity() : AppCompatActivity(), OnClickListener {
             Log.d("sislok", fingerprints.contentToString())
         }
 
-    }
+        Log.d("sislok", VK.getUserId().toString())
+
+        }
+
+
+
 
 
     private fun initUI() {
@@ -289,7 +295,9 @@ class MainActivity() : AppCompatActivity(), OnClickListener {
     private fun saveUrlsToTxt(photosUrls: List<String>) {
         val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
 
-        val file = File(downloadsDir, "photos_saved.txt")
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+
+        val file = File(downloadsDir, "photos_urls_$timeStamp.txt")
 
         try {
             FileOutputStream(file).use { fos ->
