@@ -28,23 +28,28 @@
             android:layout_height="wrap_content">
             <EditText
                 android:id="@+id/friendID"
-                android:text="143274101"
                 android:hint="Friend ID"
-                android:layout_width="110dp"
+                android:layout_weight="1.1"
+                android:singleLine="true"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent">
             </EditText>
             <EditText
                 android:id="@+id/tokenID"
-                android:text="https://oauth.vk.com/blank.html#access_token=vk1.a.IP1FB3BRoS6aR1hG3q0HG3KzLs7T03fO8Q-3PoAcYNA79mpD4ri7_6rAVEklyD1PcphhHbu0l22UPhBxne1hvbuZNA-kdnItU9wQXJkK__kb5ZC-AbP3MtH5uC-yASR6Lv7NUj4xj-fdkV7zlSA7Zl7gVA0tGkt3LftVDQK8Em4AySZRJHCLoJpkQZcUollCwrjsWtrxiBVrp3hPzTwAFg&amp;expires_in=0&amp;user_id=97027089"
                 android:hint="Received URL"
-                android:layout_width="140dp"
+                android:layout_weight="1"
+                android:singleLine="true"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent">
             </EditText>
             <Button
                 android:id="@+id/btnLink"
+                android:layout_weight="1"
+                android:textSize="11dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Link Chat">
+                android:layout_gravity="center_horizontal"
+                android:text="Link Chat &amp;\nLoad Album ID's">
             </Button>
         </LinearLayout>
         <LinearLayout
@@ -58,12 +63,22 @@
                 android:text="Press to save photo URL">
             </Button>
         </LinearLayout>
-    <TextView
-        android:id="@+id/dataGson"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp">
-    </TextView>
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+            <Spinner
+                android:id="@+id/idAlbumItems"
+                android:layout_width="wrap_content"
+                android:layout_weight="10"
+                android:layout_height="wrap_content">
+            </Spinner>
+            <Button
+                android:id="@+id/btnSaveAlbum"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Save album">
+            </Button>
+    </LinearLayout>
     </LinearLayout>

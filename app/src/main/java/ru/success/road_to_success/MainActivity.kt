@@ -7,11 +7,15 @@ import android.os.Environment
 import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
-import android.widget.TextView
+import android.widget.Spinner
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import com.example.example.AlbumIDRequest
+import com.example.example.AlbumPhotos
 import com.example.example.MessagePhotosCMID
 import com.example.example.PojoClass
 import com.google.gson.GsonBuilder
@@ -30,20 +34,25 @@ class MainActivity() : AppCompatActivity(), OnClickListener {
     private lateinit var tokenUpdate: Button
     private lateinit var btnLink: Button
     private lateinit var btnSavePhotoData: Button
-    private lateinit var btnDel: Button
-    private lateinit var btnUpd: Button
     private lateinit var friendID: EditText
     private lateinit var tokenID: EditText
-    private lateinit var dataGson: TextView
-    private lateinit var btnGson: Button
+    private lateinit var btnSaveAlbum: Button
+
+
     var tokenGlobal: String = ""
     var cmidGlobal: String = ""
     var ownerIDGlobal: String = ""
     var friendIDGlobal: String = ""
+    var idAlbumSelected: String = "saved"
+    val defaultAlbums = arrayListOf("saved", "wall", "profile")
+    lateinit var idAlbumItems: Spinner
+    lateinit var spinnerAdapter: ArrayAdapter<String>
+
 
     var cmidsPredator: Int = 100
     var cmid: String = ""
     var photosUrls = mutableListOf<String>()
+
 
 
 
@@ -68,6 +77,19 @@ class MainActivity() : AppCompatActivity(), OnClickListener {
 
     private fun initUI() {
 
+        idAlbumItems = findViewById(R.id.idAlbumItems)
+        spinnerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, defaultAlbums)
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        idAlbumItems.adapter = spinnerAdapter
+        idAlbumItems.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                idAlbumSelected = parent.getItemAtPosition(position).toString()
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+            }
+        }
+
         tokenUpdate = findViewById(R.id.tokenUpdate)
         tokenUpdate.setOnClickListener { handleOnTokenUpdateClicked() }
 
@@ -82,15 +104,11 @@ class MainActivity() : AppCompatActivity(), OnClickListener {
 
         btnSavePhotoData = findViewById(R.id.btnSavePhotoData)
         btnSavePhotoData.setOnClickListener { handleOnBtnSavePhotoDataClicked() }
-//
-//        btnAdd = findViewById(R.id.btnAdd)
-//        btnAdd.setOnClickListener { handleOnBtnAddClicked() }
-//
-//        btnRead = findViewById(R.id.btnRead)
-//        btnRead.setOnClickListener { handleOnBtnReadClicked() }
-//
-//        btnClear = findViewById(R.id.btnClear)
-//        btnClear.setOnClickListener { handleOnBtnClearClicked() }
+
+
+
+        btnSaveAlbum = findViewById(R.id.btnSaveAlbum)
+        btnSaveAlbum.setOnClickListener { handleOnBtnSaveAlbumClicked() }
 //
 //        etName = findViewById(R.id.etName)
 //        etEmail = findViewById(R.id.etEmail)
@@ -99,8 +117,9 @@ class MainActivity() : AppCompatActivity(), OnClickListener {
 
     private fun handleOnBtnSavePhotoDataClicked() {
         Log.d("sislok", "Прошло1")
+        photosUrls.clear()
 
-        val client = OkHttpClient()
+        val clientis = OkHttpClient()
 
         while (cmidsPredator >= 3) {
 
@@ -111,7 +130,7 @@ class MainActivity() : AppCompatActivity(), OnClickListener {
 
             val request = Request.Builder().url(urlUltra).build()
 
-            client.newCall(request).enqueue(object : okhttp3.Callback {
+            clientis.newCall(request).enqueue(object : okhttp3.Callback {
 
                 override fun onResponse(call: Call, response: Response) {
                     val body = response.body?.string()
@@ -184,15 +203,41 @@ class MainActivity() : AppCompatActivity(), OnClickListener {
                 Log.d("sislok", "Ошибка запроса")
             }
         })
+
+        var albumIdBestUrl = "https://api.vk.com/method/photos.getAlbums?owner_id=$ownerIDGlobal&access_token=$tokenGlobal&v=5.199"
+
+        val requesterer = Request.Builder().url(albumIdBestUrl).build()
+
+        val clienter = OkHttpClient()
+        clienter.newCall(requesterer).enqueue(object: okhttp3.Callback{
+
+            override fun onResponse(call: Call, response: Response) {
+                val boders = response.body?.string()
+                val gson = GsonBuilder().create()
+                val responses = gson.fromJson(boders, AlbumIDRequest::class.java)
+                var megaresponse = responses.toString()
+                val regex = """id=(\d+)""".toRegex()
+                val matchId = regex.findAll(megaresponse)
+                val newItems = mutableListOf<String>()
+                for (match in matchId) {
+                    val itemId = match.groupValues[1]
+                    if (!defaultAlbums.contains(itemId)) {
+                        newItems.add(itemId)
+                    }
+                }
+
+                runOnUiThread { addItemsToSpinner(newItems) }
+
+
+            }
+            override fun onFailure(call: Call, e: IOException) {
+                Log.d("sislok", "Ошибка запроса")
+            }
+        })
+
     }
 
-    private fun handleOnBtnReadClicked() {
 
-    }
-
-    private fun handleOnBtnUpdateClicked() {
-
-    }
 
     private fun handleOnTokenUpdateClicked() {
         val url = "https://oauth.vk.com/authorize?client_id=6121396&scope=photos,video,messages,offline&redirect_uri=https://oauth.vk.com/blank.html&response_type=token&display=page"
@@ -200,8 +245,39 @@ class MainActivity() : AppCompatActivity(), OnClickListener {
         startActivity(intent)
     }
 
-    private fun handleOnBtnClearClicked() {
+    private fun handleOnBtnSaveAlbumClicked() {
 
+        Log.d("sislok", "Прошло1")
+        photosUrls.clear()
+
+        val clienteres = OkHttpClient()
+
+
+            var urik = "https://api.vk.com/method/photos.get?owner_id=$ownerIDGlobal&album_id=$idAlbumSelected&access_token=$tokenGlobal&v=5.199"
+            var urikL = urik
+
+            val requesters = Request.Builder().url(urikL).build()
+
+            clienteres.newCall(requesters).enqueue(object : okhttp3.Callback {
+
+                override fun onResponse(call: Call, response: Response) {
+                    val bodyros = response.body?.string()
+                    Log.d("sislok", bodyros.toString())
+                    val gson = GsonBuilder().create()
+                    val responseros = gson.fromJson(bodyros, AlbumPhotos::class.java)
+                    val urlPattern = "url=(https?:\\/\\/[^\\s)]+)".toRegex()
+                    var inputedString = responseros.toString()
+                    val urlsis = urlPattern.findAll(inputedString).map { it.groupValues[1] }.toList()
+                    println("Extracted URLs:")
+                    urlsis.forEach { photosUrls.add(it); println(it) }
+                    saveUrlsToTxt(photosUrls)
+                }
+                override fun onFailure(call: Call, e: IOException) {
+                    Log.d("sislok", "Ошибка запроса")
+
+                }
+
+            })
     }
 
 
@@ -210,10 +286,10 @@ class MainActivity() : AppCompatActivity(), OnClickListener {
     }
 
 
-    fun saveUrlsToTxt(photosUrls: List<String>) {
+    private fun saveUrlsToTxt(photosUrls: List<String>) {
         val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
 
-        val file = File(downloadsDir, "photos_urls.txt")
+        val file = File(downloadsDir, "photos_saved.txt")
 
         try {
             FileOutputStream(file).use { fos ->
@@ -229,6 +305,12 @@ class MainActivity() : AppCompatActivity(), OnClickListener {
             println("Ошибка при записи файла: ${e.message}")
         }
     }
+
+    private fun addItemsToSpinner(newItems: List<String>) {
+        defaultAlbums.addAll(newItems)
+        spinnerAdapter.notifyDataSetChanged()
+    }
+
 
     companion object {
         private const val LOG_TAG: String = "myLogs"
