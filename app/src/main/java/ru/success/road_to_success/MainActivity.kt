@@ -1,6 +1,7 @@
 package ru.success.road_to_success
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -8,7 +9,16 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.google.android.material.navigation.NavigationView
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import ru.success.road_to_success.DTO.ProfileData.ProfileDataInterface
+import ru.success.road_to_success.DTO.ProfileData.ProfileDataItems
 import ru.success.road_to_success.Fragments.ChatFragment
 import ru.success.road_to_success.Fragments.DocsFragment
 import ru.success.road_to_success.Fragments.HomeFragment
@@ -16,11 +26,13 @@ import ru.success.road_to_success.Fragments.LoginFragment
 import ru.success.road_to_success.Fragments.MovieFragment
 import ru.success.road_to_success.Fragments.PhotoAlbumFragment
 import ru.success.road_to_success.databinding.ActivityMainBinding
+import ru.success.road_to_success.databinding.NavHeaderBinding
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var binding: ActivityMainBinding
+    private lateinit var headerBinding: NavHeaderBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,7 +41,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val headerView = binding.navView.getHeaderView(0)
+        headerBinding = NavHeaderBinding.bind(headerView)
+
+
+
+
         drawerLayout = binding.drawerLayout
+
 
         val toolbar = binding.toolbar
         setSupportActionBar(toolbar)
@@ -69,6 +88,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     .commit()
             }
         }
+
+        fetchAlbums()
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -134,6 +155,43 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         editor.remove("access_token")
         editor.remove("user_id")
         editor.apply()
+    }
+
+    private fun fetchAlbums() {
+        var user_id = getUserIdFromPreferences()
+        var access_token = getTokenFromPreferences()
+        val retrofit = createRetrofit()
+        val retrofiters = retrofit.create(ProfileDataInterface::class.java)
+        retrofiters.getProfileData(access_token!!).enqueue(object : Callback<ProfileDataItems> {
+            override fun onResponse(call: Call<ProfileDataItems>, response: Response<ProfileDataItems>) {
+                if (response.isSuccessful) {
+                    val profileUrl = response.body()!!.response[0].photo400orig
+                    var profileFirstName = response.body()!!.response[0].firstname
+                    var profileLastName = response.body()!!.response[0].lastname
+                    headerBinding.profileName.text = profileFirstName + " " + profileLastName
+                    headerBinding.profileId.text = "USER ID: " + user_id
+
+                    Glide.with(this@MainActivity)
+                        .load(profileUrl)
+                        .transform(CircleCrop())
+                        .into(headerBinding.profileImage)
+
+                } else {
+                    Log.e("API_ERROR", "Error: ${response.code()} - ${response.message()}")
+                }
+            }
+
+            override fun onFailure(call: Call<ProfileDataItems>, t: Throwable) {
+                Log.e("API_ERROR", "Failure Call", t)
+            }
+        })
+    }
+
+    private fun createRetrofit(): Retrofit {
+        return Retrofit.Builder()
+            .addConverterFactory(GsonConverterFactory.create())
+            .baseUrl("https://api.vk.com/method/")
+            .build()
     }
 
     companion object {

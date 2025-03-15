@@ -25,7 +25,7 @@ class AlbumAdapter(private val albumList: List<AlbumItems>) : RecyclerView.Adapt
 
         holder.binding.nameTextView.text = album.name
         holder.binding.idTextView.text = album.id
-        holder.binding.itemCountTextView.text = "Количество: ${album.itemCount}" // Отображаем количество элементов
+        holder.binding.itemCountTextView.text = "Количество: ${album.itemCount}"
 
         if (expandedPositions.contains(position)) {
             holder.binding.buttonContainer.visibility = View.VISIBLE
