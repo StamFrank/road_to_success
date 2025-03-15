@@ -1,0 +1,76 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="16dp"
+    android:layout_marginBottom="16dp"
+    android:gravity="center_vertical"
+    android:weightSum="1">
+
+    <!-- Фото профиля -->
+    <ImageView
+        android:id="@+id/profileImageView"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginEnd="16dp"
+        android:scaleType="centerCrop" />
+
+    <!-- Контейнер для текста и ID -->
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_weight="1">
+
+        <!-- Название альбома -->
+        <TextView
+            android:id="@+id/nameTextView"
+            android:layout_width="wrap_content"
+            android:lines="1"
+            android:layout_height="wrap_content"
+            android:text="Album Name"
+            android:textSize="16sp" />
+
+        <!-- ID альбома -->
+        <TextView
+            android:id="@+id/idTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ID"
+            android:textSize="14sp"
+            android:textColor="@android:color/darker_gray" />
+
+        <!-- Количество элементов -->
+        <TextView
+            android:id="@+id/itemCountTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Items: 0"
+            android:textSize="14sp"
+            android:textColor="@android:color/darker_gray" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/buttonContainer"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:visibility="visible"
+        android:gravity="end">
+
+        <Button
+            android:id="@+id/button_album_save_data"
+            android:layout_width="120sp"
+            android:layout_height="35sp"
+            android:text="Save Data" />
+
+        <Button
+            android:id="@+id/button_album_save_url"
+            android:layout_width="120sp"
+            android:layout_height="35sp"
+            android:text="Save URL" />
+    </LinearLayout>
+
+
+</LinearLayout>

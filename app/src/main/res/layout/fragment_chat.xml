@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Fragments.ChatFragment">
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ToggleButton
+                android:id="@+id/chat_button1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textOff="Photo"
+                android:textOn="Photo" />
+
+            <ToggleButton
+                android:id="@+id/chat_button2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textOff="Video"
+                android:textOn="Video" />
+
+            <ToggleButton
+                android:id="@+id/chat_button3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textOff="Audio"
+                android:textOn="Audio" />
+
+            <ToggleButton
+                android:id="@+id/chat_button4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textOff="Documents"
+                android:textOn="Documents" />
+
+            <ToggleButton
+                android:id="@+id/chat_button5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textOff="Link"
+                android:textOn="Link" />
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Chat Fragment"
+        android:textSize="30sp"
+        android:layout_centerInParent="true"/>
+
+</RelativeLayout>
