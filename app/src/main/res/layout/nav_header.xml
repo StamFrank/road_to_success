@@ -5,14 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="230dp"
     android:gravity="bottom"
-    android:paddingTop="45dp"
     android:paddingLeft="25dp">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="2.7"
+        android:text="">
+    </TextView>
     <ImageView
-
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:id="@+id/profileImage"
-        android:layout_weight="1"
+        android:layout_weight="1.5"
         android:paddingBottom="10dp">
     </ImageView>
     <TextView
@@ -20,14 +24,14 @@
         android:layout_height="match_parent"
         android:id="@+id/profileName"
         android:text=""
-        android:layout_weight="3">
+        android:layout_weight="2.9">
     </TextView>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:id="@+id/profileId"
         android:text=""
-        android:layout_weight="3">
+        android:layout_weight="2.9">
     </TextView>
 
 

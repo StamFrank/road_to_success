@@ -20,16 +20,6 @@ import ru.success.road_to_success.DTO.PhotoAlbums.PhotoAlbumsItemInterface
 import ru.success.road_to_success.databinding.FragmentPhotoAlbumBinding
 
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [PhotoAlbumFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class PhotoAlbumFragment : Fragment() {
 
     private var _binding: FragmentPhotoAlbumBinding? = null
@@ -52,7 +42,7 @@ class PhotoAlbumFragment : Fragment() {
     }
 
     private fun initRecyclerView() {
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        binding.recyclerViewPhoto.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
     }
 
     private fun loadCredentials() {
@@ -68,16 +58,19 @@ class PhotoAlbumFragment : Fragment() {
             override fun onResponse(call: Call<PhotoAlbumItems>, response: Response<PhotoAlbumItems>) {
                 if (response.isSuccessful) {
                     val photoAlbumItems = response.body()?.response?.items ?: emptyList()
-                    val albumItemsList = photoAlbumItems.map { albumItem ->
-                        AlbumItems(
-                            profilePhotoUrl = albumItem.thumbSrc,
-                            name = albumItem.title,
-                            id = "ID: ${albumItem.id}",
-                            itemCount = albumItem.size
-                        )
-                    }
+                    val albumItemsList = photoAlbumItems
+                        .filter { albumItem -> albumItem.size > 0 }
+                        .map { albumItem ->
+                            AlbumItems(
+                                profilePhotoUrl = albumItem.thumbSrc,
+                                name = albumItem.title,
+                                id = "ID: ${albumItem.id}",
+                                itemCount = albumItem.size
+                            )
+                        }
+
                     albumAdapter = AlbumAdapter(albumItemsList)
-                    binding.recyclerView.adapter = albumAdapter
+                    binding.recyclerViewPhoto.adapter = albumAdapter
                 } else {
                     Log.e("API_ERROR", "Error: ${response.code()} - ${response.message()}")
                 }

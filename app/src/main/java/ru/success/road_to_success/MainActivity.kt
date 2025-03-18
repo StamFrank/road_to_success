@@ -158,19 +158,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun fetchAlbums() {
-        var user_id = getUserIdFromPreferences()
-        var access_token = getTokenFromPreferences()
         val retrofit = createRetrofit()
         val retrofiters = retrofit.create(ProfileDataInterface::class.java)
-        retrofiters.getProfileData(access_token!!).enqueue(object : Callback<ProfileDataItems> {
+        retrofiters.getProfileData(getTokenFromPreferences()!!).enqueue(object : Callback<ProfileDataItems> {
             override fun onResponse(call: Call<ProfileDataItems>, response: Response<ProfileDataItems>) {
                 if (response.isSuccessful) {
                     val profileUrl = response.body()!!.response[0].photo400orig
                     var profileFirstName = response.body()!!.response[0].firstname
                     var profileLastName = response.body()!!.response[0].lastname
                     headerBinding.profileName.text = profileFirstName + " " + profileLastName
-                    headerBinding.profileId.text = "USER ID: " + user_id
-
+                    headerBinding.profileId.text = "USER ID: " + getUserIdFromPreferences()
                     Glide.with(this@MainActivity)
                         .load(profileUrl)
                         .transform(CircleCrop())
