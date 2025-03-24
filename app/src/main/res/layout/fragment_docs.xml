@@ -1,90 +1,80 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Fragments.DocsFragment">
+    android:orientation="vertical"
+    android:padding="16dp">
 
-    <!-- TODO: Update blank fragment layout -->
-    <HorizontalScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fillViewport="true">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <ToggleButton
-                android:id="@+id/docs_button1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textOff="Text Documents"
-                android:textOn="Text Documents" />
-
-            <ToggleButton
-                android:id="@+id/docs_button2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textOff="Archives"
-                android:textOn="Archives" />
-
-            <ToggleButton
-                android:id="@+id/docs_button3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textOff="Gif"
-                android:textOn="Gif" />
-
-            <ToggleButton
-                android:id="@+id/docs_button4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textOff="Images"
-                android:textOn="Images" />
-
-            <ToggleButton
-                android:id="@+id/docs_button5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textOff="Audio"
-                android:textOn="Audio" />
-
-            <ToggleButton
-                android:id="@+id/docs_button6"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textOff="Video"
-                android:textOn="Video" />
-
-            <ToggleButton
-                android:id="@+id/docs_button7"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textOff="E-Books"
-                android:textOn="E-Books" />
-
-            <ToggleButton
-                android:id="@+id/docs_button8"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textOff="Other/Unknown"
-                android:textOn="Other/Unknown" />
-
-
-        </LinearLayout>
-    </HorizontalScrollView>
-
-
-
-
-    <TextView
-
+    <!-- TextView 1 с двумя кнопками -->
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Docs Fragment"
-        android:textSize="30sp"
-        android:layout_centerInParent="true"/>
+        android:orientation="vertical">
 
-</RelativeLayout>
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView 1"
+            android:textSize="18sp"
+            android:padding="16dp" />
+
+        <LinearLayout
+            android:id="@+id/buttonContainer1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <Button
+                android:id="@+id/button1_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Button 1.1" />
+
+            <Button
+                android:id="@+id/button1_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Button 1.2" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Повторите для других TextView -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView 2"
+            android:textSize="18sp"
+            android:padding="16dp" />
+
+        <LinearLayout
+            android:id="@+id/buttonContainer2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <Button
+                android:id="@+id/button2_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Button 2.1" />
+
+            <Button
+                android:id="@+id/button2_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Button 2.2" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Добавьте остальные TextView аналогичным образом -->
+    <!-- В этом примере 2 TextView, но добавьте 6 аналогично -->
+
+</LinearLayout>

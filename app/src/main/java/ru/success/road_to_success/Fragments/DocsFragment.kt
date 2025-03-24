@@ -1,64 +1,55 @@
 package ru.success.road_to_success.Fragments
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ToggleButton
 import androidx.fragment.app.Fragment
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import ru.success.road_to_success.AdaptersAndClasses.Docs.DocsItems
+import ru.success.road_to_success.DTO.Docs.DocsItemsCount
+import ru.success.road_to_success.DTO.Docs.DocsItemsCountInterface
 import ru.success.road_to_success.databinding.FragmentDocsBinding
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [DocsFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class DocsFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+
     private lateinit var binding: FragmentDocsBinding
-    private lateinit var toggleButtons: List<ToggleButton>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+        loadCredentials()
 
-        toggleButtons = listOf(
-            binding.docsButton1,
-            binding.docsButton2,
-            binding.docsButton3,
-            binding.docsButton4,
-            binding.docsButton5,
-            binding.docsButton6,
-            binding.docsButton7,
-            binding.docsButton8
-        )
+        //Попытки загружать только фрагменты где их не 0(у меня есть в вк раздел с одним - так что проверка на 1)
 
-        toggleButtons.forEach { button ->
-            button.setOnCheckedChangeListener { _, isChecked ->
-                if (isChecked) {
-                    uncheckOtherButtons(button)
+                for (i in 0..7) {
+                    getDocsItemsCount(allCountData[i].docsType,ACCESS_TOKEN) { docsItemsCounter ->
+                        if (docsItemsCounter != null) {
+                            TYPE_NUMBER = docsItemsCounter
+                            allCountData[i].docsSize = TYPE_NUMBER
+                            Log.d("sislok", TYPE_NUMBER)
+                            Log.d("sislok", allCountData.toString())
+                        } else if (docsItemsCounter == "1"){
+                            allCountData.removeAt(i)
+                            println("Failed to get count")
+                        }
+                    }
                 }
-            }
-        }
-    }
+                Log.d("sislok", allCountData.toString())
 
-    private fun uncheckOtherButtons(checkedButton: ToggleButton) {
-        toggleButtons.forEach { button ->
-            if (button != checkedButton) {
-                button.isChecked = false
-            }
-        }
+
+//        println(updateDocsItemsList(ACCESS_TOKEN))
+
+
+
+
     }
 
     override fun onCreateView(
@@ -68,13 +59,60 @@ class DocsFragment : Fragment() {
         return binding.root
     }
 
-    companion object {
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) = DocsFragment().apply {
-            arguments = Bundle().apply {
-                putString(ARG_PARAM1, param1)
-                putString(ARG_PARAM2, param2)
+    private fun createRetrofit(): Retrofit {
+        return Retrofit.Builder()
+            .addConverterFactory(GsonConverterFactory.create())
+            .baseUrl("https://api.vk.com/method/")
+            .build()
+    }
+
+    private fun getDocsItemsCount(type: String, accessToken: String, callback: (String?) -> Unit) {
+        val retrofit = createRetrofit()
+        val docsCountService = retrofit.create(DocsItemsCountInterface::class.java)
+
+        docsCountService.getDocsItemsCount(type, accessToken).enqueue(object : Callback<DocsItemsCount> {
+            override fun onResponse(call: Call<DocsItemsCount>, response: Response<DocsItemsCount>) {
+                if (response.isSuccessful) {
+                    val docsItemsCounter = response.body()?.response?.count
+                    callback(docsItemsCounter)
+                } else {
+                    Log.e("API_ERROR", "Error: ${response.code()} - ${response.message()}")
+                    callback(null)
+                }
             }
-        }
+
+            override fun onFailure(call: Call<DocsItemsCount>, t: Throwable) {
+                Log.e("API_ERROR", "Failure Call", t)
+                callback(null)
+            }
+        })
+    }
+
+
+
+
+
+
+    private fun loadCredentials() {
+        val sharedPreferences = requireActivity().getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+        ACCESS_TOKEN = sharedPreferences.getString("access_token", "0").toString()
+    }
+
+
+    companion object {
+
+        var ACCESS_TOKEN = ""
+        var TYPE_NUMBER = ""
+
+        var allCountData = mutableListOf(
+            DocsItems("R.drawable.docs.png", "1" , "0"),
+            DocsItems("R.drawable.archive.png", "2" , "0"),
+            DocsItems("R.drawable.gif.png", "3" , "0"),
+            DocsItems("R.drawable.image.png", "4" , "0"),
+            DocsItems("R.drawable.audio.png", "5" , "0"),
+            DocsItems("R.drawable.movie.png", "6" , "0"),
+            DocsItems("R.drawable.e_book.png", "7" , "0"),
+            DocsItems("R.drawable.unknown_document.png", "8", "0")
+        )
     }
 }

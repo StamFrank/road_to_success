@@ -1,0 +1,70 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="16dp"
+    android:layout_marginBottom="16dp"
+    android:gravity="center_vertical"
+    android:weightSum="1">
+
+    <!-- Фото профиля -->
+    <ImageView
+        android:id="@+id/docsImageView"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginEnd="16dp"
+        android:scaleType="centerCrop" />
+
+    <!-- Контейнер для текста и ID -->
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_weight="1">
+
+        <!-- Название альбома -->
+        <TextView
+            android:id="@+id/docsTypeName"
+            android:layout_width="wrap_content"
+            android:lines="1"
+            android:layout_height="wrap_content"
+            android:text="Docs Name"
+            android:textSize="16sp" />
+
+        <!-- ID альбома -->
+        <TextView
+            android:id="@+id/docsTypeSize"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Size:"
+            android:textSize="14sp"
+            android:textColor="@android:color/darker_gray" />
+
+        <!-- Количество элементов -->
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/docsButtonContainer"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        android:layout_gravity="center">
+
+        <Button
+            android:id="@+id/buttonDocsSaveData"
+            android:layout_width="120sp"
+            android:layout_height="35sp"
+            android:text="Save Data"
+            android:gravity="center"/>
+
+        <Button
+            android:id="@+id/buttonDocsSaveUrl"
+            android:layout_width="120sp"
+            android:layout_height="35sp"
+            android:text="Save URL" />
+    </LinearLayout>
+
+</LinearLayout>
