@@ -5,34 +5,42 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import ru.success.road_to_success.databinding.ItemDocsBinding
 
-class ChatAdapter(private val docsList: List<DocsItems>) : RecyclerView.Adapter<ChatAdapter.DocsViewHolder>() {
+class DocsAdapter(private val docsList: List<DocsItems>) : RecyclerView.Adapter<DocsAdapter.DocsViewHolder>() {
     private val expandedPositions = mutableSetOf<Int>()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DocsViewHolder {
         val binding = ItemDocsBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return DocsViewHolder(binding)
     }
-
+    //from Glide to localfiles optimizer
     override fun onBindViewHolder(holder: DocsViewHolder, position: Int) {
-        val chat = docsList[position]
+        val docs = docsList[position]
 
-        //Glide set Images to Albums
-        Glide.with(holder.itemView.context)
-            .load(chat.docsImage)
-            .circleCrop()
-            .into(holder.binding.docsImageView)
+        val context = holder.itemView.context
+        val resourceId = context.resources.getIdentifier(
+            docs.docsImage,
+            "drawable",
+            context.packageName
+        )
 
-        holder.binding.docsTypeName.text = chat.docsType.toString()
-        holder.binding.docsTypeSize.text = chat.docsSize
+        if (resourceId != 0) {
+            holder.binding.docsImageView.setImageResource(resourceId)
+        } else {
+
+            holder.binding.docsImageView.setImageResource(android.R.drawable.ic_menu_report_image)
+        }
+
+        holder.binding.docsTypeName.text = docs.docsType
+        holder.binding.docsTypeSize.text = docs.docsSize
+
 
         if (expandedPositions.contains(position)) {
             holder.binding.docsButtonContainer.visibility = View.VISIBLE
         } else {
             holder.binding.docsButtonContainer.visibility = View.GONE
         }
-
 
         holder.itemView.setOnClickListener {
             if (expandedPositions.contains(position)) {
@@ -43,13 +51,12 @@ class ChatAdapter(private val docsList: List<DocsItems>) : RecyclerView.Adapter<
             notifyItemChanged(position)
         }
 
-
         holder.binding.buttonDocsSaveData.setOnClickListener {
-            Toast.makeText(holder.itemView.context, "Button Save Data " + chat.docsSize, Toast.LENGTH_SHORT).show()
+            Toast.makeText(holder.itemView.context, "Button Save Data " + docs.docsSize, Toast.LENGTH_SHORT).show()
         }
 
         holder.binding.buttonDocsSaveUrl.setOnClickListener {
-            Toast.makeText(holder.itemView.context, "Button Save Url " + chat.docsSize, Toast.LENGTH_SHORT).show()
+            Toast.makeText(holder.itemView.context, "Button Save Url " + docs.docsSize, Toast.LENGTH_SHORT).show()
         }
 
     }
