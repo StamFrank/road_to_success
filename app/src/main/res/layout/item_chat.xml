@@ -7,7 +7,6 @@
     android:gravity="center_vertical"
     android:weightSum="1">
 
-    <!-- Фото профиля -->
     <ImageView
         android:id="@+id/chatImageView"
         android:layout_width="80dp"
@@ -15,7 +14,6 @@
         android:layout_marginEnd="16dp"
         android:scaleType="centerCrop" />
 
-    <!-- Контейнер для текста и ID -->
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="wrap_content"
@@ -23,7 +21,6 @@
         android:gravity="center_vertical"
         android:layout_weight="1">
 
-        <!-- Название альбома -->
         <TextView
             android:id="@+id/chatNameView"
             android:layout_width="wrap_content"
@@ -32,7 +29,6 @@
             android:text="User Name"
             android:textSize="16sp" />
 
-        <!-- ID альбома -->
         <TextView
             android:id="@+id/chatCmidView"
             android:layout_width="wrap_content"
@@ -41,7 +37,6 @@
             android:textSize="14sp"
             android:textColor="@android:color/darker_gray" />
 
-        <!-- Количество элементов -->
         <TextView
             android:id="@+id/chatIdView"
             android:layout_width="wrap_content"

@@ -8,7 +8,7 @@
     android:weightSum="1">
 
     <ImageView
-        android:id="@+id/profileImageView"
+        android:id="@+id/movieImageView"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_marginEnd="16dp"
@@ -22,15 +22,15 @@
         android:layout_weight="1">
 
         <TextView
-            android:id="@+id/nameTextView"
+            android:id="@+id/movieAlbumName"
             android:layout_width="wrap_content"
             android:lines="1"
             android:layout_height="wrap_content"
-            android:text="Album Name"
+            android:text="Movie Album Name"
             android:textSize="16sp" />
 
         <TextView
-            android:id="@+id/idTextView"
+            android:id="@+id/movieAlbumId"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="ID"
@@ -38,7 +38,7 @@
             android:textColor="@android:color/darker_gray" />
 
         <TextView
-            android:id="@+id/itemCountTextView"
+            android:id="@+id/movieAlbumCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Items: 0"
@@ -47,7 +47,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/buttonContainer"
+        android:id="@+id/movieButtonContainer"
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -55,13 +55,13 @@
         android:gravity="end">
 
         <Button
-            android:id="@+id/buttonAlbumSaveUrl"
+            android:id="@+id/buttonMovieSaveUrl"
             android:layout_width="120sp"
             android:layout_height="35sp"
             android:text="Save Data" />
 
         <Button
-            android:id="@+id/buttonAlbumSaveData"
+            android:id="@+id/buttonMovieSaveData"
             android:layout_width="120sp"
             android:layout_height="35sp"
             android:text="Save URL" />

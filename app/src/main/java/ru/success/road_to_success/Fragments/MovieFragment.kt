@@ -1,56 +1,115 @@
 package ru.success.road_to_success.Fragments
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import ru.success.road_to_success.R
+import androidx.recyclerview.widget.LinearLayoutManager
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import ru.success.road_to_success.AdaptersAndClasses.Movie.MovieAdapter
+import ru.success.road_to_success.AdaptersAndClasses.Movie.MovieItems
+import ru.success.road_to_success.DTO.Movie.MovieAlbumItems
+import ru.success.road_to_success.DTO.Movie.MovieAlbumItemsInterface
+import ru.success.road_to_success.databinding.FragmentMovieBinding
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [MovieFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class MovieFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    private var _binding: FragmentMovieBinding? = null
+    private val binding get() = _binding!!
+    private lateinit var movieAdapter: MovieAdapter
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+        initRecyclerView()
+        loadCredentials()
+        fetchMovieAlbums()
+
     }
+
+    private fun fetchMovieAlbums() {
+        val retrofit = createRetrofit()
+        val retrofiter = retrofit.create(MovieAlbumItemsInterface::class.java)
+        retrofiter.getMovies(ACCESS_TOKEN).enqueue(object : Callback<MovieAlbumItems> {
+            override fun onResponse(call: Call<MovieAlbumItems>, response: Response<MovieAlbumItems>) {
+                if (response.isSuccessful) {
+                    val movieAlbumItems = response.body()?.response?.items ?: emptyList()
+
+                    val movieItemsList = movieAlbumItems.mapNotNull { movieItem ->
+
+                        val images = movieItem.items
+                        if (!images.isNullOrEmpty() && images.size > 1) {
+
+                            val imageUrl = images[1].url
+                            MovieItems(
+                                movieAlbumImageUrl = imageUrl,
+                                movieAlbumName = movieItem.title,
+                                movieAlbumId = "ID: ${movieItem.id}",
+                                movieItemsCount = movieItem.count
+                            )
+                        } else {
+                            null
+                        }
+                    }
+
+                    movieAdapter = MovieAdapter(movieItemsList)
+                    binding.recyclerViewMovie.adapter = movieAdapter
+                } else {
+                    Log.e("API_ERROR", "Error: ${response.code()} - ${response.message()}")
+                }
+            }
+
+            override fun onFailure(call: Call<MovieAlbumItems>, t: Throwable) {
+                Log.e("API_ERROR", "Failure Call", t)
+            }
+        })
+    }
+
+
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? { // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_movie, container, false)
+    ): View {
+        _binding = FragmentMovieBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    private fun initRecyclerView() {
+        binding.recyclerViewMovie.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+    }
+
+    private fun loadCredentials() {
+        val sharedPreferences = requireActivity().getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+        ACCESS_TOKEN = sharedPreferences.getString("access_token", "0").toString()
+    }
+
+    private fun createRetrofit(): Retrofit {
+        return Retrofit.Builder()
+            .addConverterFactory(GsonConverterFactory.create())
+            .baseUrl("https://api.vk.com/method/")
+            .build()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment MovieFragment.
-         */ // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) = MovieFragment().apply {
-            arguments = Bundle().apply {
-                putString(ARG_PARAM1, param1)
-                putString(ARG_PARAM2, param2)
-            }
-        }
+        var ACCESS_TOKEN = ""
+
     }
+
+
+
 }
