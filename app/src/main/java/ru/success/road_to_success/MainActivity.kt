@@ -1,4 +1,5 @@
 package ru.success.road_to_success
+
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -32,7 +33,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var binding: ActivityMainBinding
-    private lateinit var headerBinding: NavHeaderBinding
+    private var headerBinding: NavHeaderBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,14 +42,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val headerView = binding.navView.getHeaderView(0)
-        headerBinding = NavHeaderBinding.bind(headerView)
-
-
-
-
         drawerLayout = binding.drawerLayout
-
 
         val toolbar = binding.toolbar
         setSupportActionBar(toolbar)
@@ -66,6 +60,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
+        if (navigationView.headerCount > 0) {
+            val headerView = navigationView.getHeaderView(0)
+            headerBinding = NavHeaderBinding.bind(headerView)
+        }
+
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, HomeFragment())
@@ -75,7 +74,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         val tokenAccess = getTokenFromPreferences()
         val userId = getUserIdFromPreferences()
-
 
         if (savedInstanceState == null) {
             if (tokenAccess.isNullOrEmpty() || userId.isNullOrEmpty()) {
@@ -158,21 +156,24 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun fetchAlbums() {
+        val token = getTokenFromPreferences() ?: return
         val retrofit = createRetrofit()
         val retrofiters = retrofit.create(ProfileDataInterface::class.java)
-        retrofiters.getProfileData(getTokenFromPreferences()!!).enqueue(object : Callback<ProfileDataItems> {
+        retrofiters.getProfileData(token).enqueue(object : Callback<ProfileDataItems> {
             override fun onResponse(call: Call<ProfileDataItems>, response: Response<ProfileDataItems>) {
                 if (response.isSuccessful) {
-                    val profileUrl = response.body()!!.response[0].photo400orig
-                    var profileFirstName = response.body()!!.response[0].firstname
-                    var profileLastName = response.body()!!.response[0].lastname
-                    headerBinding.profileName.text = profileFirstName + " " + profileLastName
-                    headerBinding.profileId.text = "USER ID: " + getUserIdFromPreferences()
-                    Glide.with(this@MainActivity)
-                        .load(profileUrl)
-                        .transform(CircleCrop())
-                        .into(headerBinding.profileImage)
-
+                    val profile = response.body()?.response?.getOrNull(0) ?: return
+                    val profileUrl = profile.photo400orig
+                    val profileFirstName = profile.firstname
+                    val profileLastName = profile.lastname
+                    headerBinding?.apply {
+                        profileName.text = "$profileFirstName $profileLastName"
+                        profileId.text = "USER ID: ${getUserIdFromPreferences()}"
+                        Glide.with(this@MainActivity)
+                            .load(profileUrl)
+                            .transform(CircleCrop())
+                            .into(profileImage)
+                    }
                 } else {
                     Log.e("API_ERROR", "Error: ${response.code()} - ${response.message()}")
                 }
@@ -189,9 +190,5 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl("https://api.vk.com/method/")
             .build()
-    }
-
-    companion object {
-
     }
 }

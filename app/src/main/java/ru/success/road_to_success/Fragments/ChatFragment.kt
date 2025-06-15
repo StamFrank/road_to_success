@@ -108,11 +108,11 @@ class ChatFragment : Fragment() {
                     if (response.isSuccessful) {
                         val profiles = response.body()?.response?.profiles ?: emptyList()
                         val items = response.body()?.response?.items ?: emptyList()
-                        if (profiles.isNotEmpty()) {
-                            val profile = profiles[0]
+                        val profile = profiles.find { it.id == id }
+
+                        if (profile != null) {
                             val profilePhotoUrl = profile.photo100
                             val profileName = "${profile.firstname} ${profile.lastname}"
-
                             val cmid = if (items.isNotEmpty()) items[0].lastconversationmessageid else ""
 
                             chatItemsList.add(
