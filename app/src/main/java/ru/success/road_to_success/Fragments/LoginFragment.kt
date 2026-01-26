@@ -52,8 +52,17 @@ class LoginFragment : Fragment() {
 
                 //Checker for Link in String
                 url?.let {
-                    if (it.startsWith("https://oauth.vk.com/blank.html#")) {
+                    if (it.startsWith("https://oauth.vk.com/blank.html#payload")) {
+
+                        web_login.loadUrl("https://oauth.vk.com/authorize?client_id=6121396&scope=photos,video,messages,docs,audio,offline&redirect_uri=https://oauth.vk.com/blank.html&response_type=token&display=page")
+
+
+                    }
+                    else if (it.startsWith("https://oauth.vk.com/blank.html#access_token")) {
+
                         //Method call for saving token and user_id
+                        var b = it
+
                         saveTokenAndUserId(requireContext(), it)
 
 
